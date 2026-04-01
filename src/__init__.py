@@ -1,0 +1,1 @@
+from .gerador import next_random
