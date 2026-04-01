@@ -1,0 +1,28 @@
+# Arquivo de configuração para o simulador de fila G/G/c/K
+#
+# Uso:
+#   python simulador.py fila.yaml
+#
+# Parâmetros globais
+num_aleatorios: 100000       # número de aleatórios a utilizar
+primeira_chegada: 2.0        # tempo da primeira chegada (fila começa vazia)
+
+# Lista de simulações a executar
+simulacoes:
+  # Simulação 1 — G/G/1/5
+  - servidores: 1
+    capacidade: 5
+    chegada_min: 2
+    chegada_max: 5
+    servico_min: 3
+    servico_max: 5
+    semente: null             # null = sem semente fixa (resultados aleatórios)
+
+  # Simulação 2 — G/G/2/5
+  - servidores: 2
+    capacidade: 5
+    chegada_min: 2
+    chegada_max: 5
+    servico_min: 3
+    servico_max: 5
+    semente: null
