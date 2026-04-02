@@ -1,11 +1,15 @@
 from gerador import next_random
 
+
 def tempo_uniforme(minimo, maximo):
     """Gera um tempo aleatório entre o intervalo min e max."""
     return minimo + (maximo - minimo) * next_random()
 
+
 class Simulador:
-    def __init__(self, capacidade_k, servidores=1, chegada_range=(2, 5), atendimento_range=(3, 5)):
+    def __init__(
+        self, capacidade_k, servidores=1, chegada_range=(2, 5), atendimento_range=(3, 5)
+    ):
         self.K = capacidade_k
         self.S = servidores
         self.c_min, self.c_max = chegada_range
@@ -14,8 +18,12 @@ class Simulador:
         self.fila_atual = 0
         self.tempo_ultimo_evento = 0.0
         self.times = [0.0] * (self.K + 1)
-        self.proxima_chegada = tempo_uniforme(self.c_min, self.c_max)
-        self.proximas_saidas = [float('inf')] * self.S
+
+        self.proxima_chegada = 2.0
+
+        self.proximas_saidas = [float("inf")] * self.S
+
+        self.clientes_perdidos = 0
 
     def contabilizar_tempo(self):
         """Acumula o tempo que o sistema passou no estado atual da fila."""
@@ -26,25 +34,33 @@ class Simulador:
 
     def executar_chegada(self):
         self.contabilizar_tempo()
-        
+
         if self.fila_atual < self.K:
             self.fila_atual += 1
             for i in range(self.S):
-                if self.proximas_saidas[i] == float('inf'):
-                    self.proximas_saidas[i] = self.tempo_global + tempo_uniforme(self.a_min, self.a_max)
+                if self.proximas_saidas[i] == float("inf"):
+                    self.proximas_saidas[i] = self.tempo_global + tempo_uniforme(
+                        self.a_min, self.a_max
+                    )
                     break
-        
-        self.proxima_chegada = self.tempo_global + tempo_uniforme(self.c_min, self.c_max)
+        else:
+            self.clientes_perdidos += 1
+
+        self.proxima_chegada = self.tempo_global + tempo_uniforme(
+            self.c_min, self.c_max
+        )
 
     def executar_saida(self, servidor_idx):
         self.contabilizar_tempo()
-        
+
         if self.fila_atual > 0:
             self.fila_atual -= 1
         if self.fila_atual >= self.S:
-            self.proximas_saidas[servidor_idx] = self.tempo_global + tempo_uniforme(self.a_min, self.a_max)
+            self.proximas_saidas[servidor_idx] = self.tempo_global + tempo_uniforme(
+                self.a_min, self.a_max
+            )
         else:
-            self.proximas_saidas[servidor_idx] = float('inf')
+            self.proximas_saidas[servidor_idx] = float("inf")
 
     def next_event(self):
         """Descobre qual evento ocorre primeiro e avança o tempo global."""
